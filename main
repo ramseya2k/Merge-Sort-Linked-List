@@ -1,0 +1,155 @@
+class Main 
+{
+  public static void main(String[] args) 
+  {
+    StackLinkedList li = new StackLinkedList();
+    li.push(1);
+    li.push(5);
+    li.push(8);
+    li.push(3);
+    li.push(6);
+    li.push(9);
+    li.push(11);
+    System.out.println("\nLINKEDLIST BEFORE MERGE SORT");
+    li.printList();
+    li.setHead(li.mergeSort(li.getHead()));
+    System.out.println("\nLINKED LIST AFTER MERGE SORT");
+    li.printList();
+  }
+}
+/********************************************************************/
+class StackLinkedList
+{
+  private Node head;
+  public void setHead(Node head) // changes head 
+  {
+    this.head=head;
+  }
+  public Node getHead() // sets head 
+  {
+    return this.head;
+  }
+  /******************************************************************/
+  public Node merge(Node low, Node high) // recursive function to sort while separating 
+  {
+    Node merge;
+    if (low == null) // base case 
+    {
+      return high;
+    }
+    if (high == null) // base case 
+    {
+     return low;
+    }
+    if (low.getNum() <= high.getNum()) // if lower is greater than high, then set the merge to low, and call the function again, with lows address pointing to the next variable 
+    {
+      merge = low;
+      merge.setNext(merge(low.getNext(), high));
+    }
+    else // else, set the merge to high, and call the function again, with highs address pointing to the next variable 
+    {
+      merge = high;
+      merge.setNext(merge(low, high.getNext()));
+    }
+    return merge;
+  }
+  /******************************************************************/
+  public Node mergeSort(Node top)
+  {
+   if(isEmpty() || top.getNext()==null)
+   {
+     return top;
+   }
+    Node between = getMiddle(top); // gets the middle of the stack 
+    Node betweenNext = between.getNext(); // right side of the stack
+    between.setNext(null); // no need to use this anymore 
+    Node left = mergeSort(top); // merge sort on the left side of the list 
+    Node right = mergeSort(betweenNext); // merge sort on right side of the list 
+    Node combine = merge(left, right); // merge the left and right sides into a sorted manner 
+    return combine;
+  }
+  /******************************************************************/
+  public Node getMiddle(Node head) // this function gets the middle of the stack 
+  {
+    // Base case
+    if (isEmpty())
+    {
+      return head;
+    }
+    Node after = head.getNext();
+    Node before = head;
+    // Move after by two and slow ptr by one
+    // Finally before will point to middle node
+    while(after!=null && after.getNext()!=null && after.getNext().getNext()!=null)
+    {
+      before=before.getNext();
+      after=after.getNext().getNext();
+    }
+    return before;
+  }
+  /******************************************************************/
+  public void push(int num) // pushes a number onto the stack 
+  {
+    Node newNode = new Node(num);
+    if(isEmpty()) // if the stack is empty, set the head equal to the newNode 
+    {
+      head=newNode;
+    }
+    else // otherwise, make the newNode point to the current head, and set the head to the newNode, making the number on top of the stack 
+    {
+      newNode.setNext(head);
+      head=newNode;
+    }
+  }
+  /******************************************************************/
+  public void pop() // pops the number on top of the stack 
+  {
+    if(isEmpty())
+    {
+      System.out.println("Can't pop anything, if there's nothing to pop!");
+      return;
+    }
+    head=head.getNext();
+  }
+  /******************************************************************/
+  public void printList() // prints out the numbers in the stack 
+  {
+    System.out.println();
+    for(Node curr=head; curr!=null; curr=curr.getNext())
+    {
+      System.out.print(curr.getNum()+" ");
+    }
+    System.out.println();
+  }
+  /******************************************************************/
+  public boolean isEmpty() // function to check if the head is empty 
+  {
+    return head==null;
+  }
+}
+/*==================================================================*/
+class Node
+{
+  private int num;
+  private Node next;
+  /******************************************************************/
+  public Node(int num)
+  {
+   this.num = num;
+  }
+  /******************************************************************/
+  public int getNum()
+  {
+    return this.num;
+  }
+  /******************************************************************/
+  public Node getNext()
+  {
+    return this.next;
+  }
+  /******************************************************************/
+  public void setNext(Node next)
+  {
+    this.next = next;
+  }
+}
